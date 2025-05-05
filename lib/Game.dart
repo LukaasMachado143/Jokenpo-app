@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class Game extends StatefulWidget {
@@ -8,6 +10,40 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
+  var _imageApp = AssetImage("images/padrao.png");
+
+  var _message = "Escolha uma das opções abaixo:";
+
+  void runGame(String _userPlay) {
+    final _options = ["pedra", "papel", "tesoura"];
+
+    final _appPlay = _options[Random().nextInt(3)];
+
+    final _resultMatrix = {
+      "pedra": {
+        "pedra": "Empate",
+        "papel": "App ganhou !",
+        "tesoura": "Usuário ganhou !",
+      },
+      "papel": {
+        "pedra": "Usuário ganhou !",
+        "papel": "Empate",
+        "tesoura": "App ganhou !",
+      },
+      "tesoura": {
+        "pedra": "App ganhou !",
+        "papel": "Usuário ganhou !",
+        "tesoura": "Empate",
+      },
+    };
+
+    setState(() {
+      this._imageApp = AssetImage("images/$_appPlay.png");
+      this._message =
+          _resultMatrix?[_userPlay]?[_appPlay] ?? "Houve algum erro !";
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -25,7 +61,6 @@ class _GameState extends State<Game> {
         ),
         body: Container(
           child: Column(
-            // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
                 padding: EdgeInsets.only(top: 32, bottom: 16),
@@ -37,19 +72,31 @@ class _GameState extends State<Game> {
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: 32),
-                child: Image.asset("images/padrao.png"),
+                child: Image(image: this._imageApp),
               ),
-              Text(
-                "Resultado",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Padding(
+                padding: EdgeInsets.only(bottom: 16),
+                child: Text(
+                  this._message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Image.asset("images/pedra.png", height: 100),
-                  Image.asset("images/papel.png", height: 100),
-                  Image.asset("images/tesoura.png", height: 100),
+                  GestureDetector(
+                    onTap: () => runGame("pedra"),
+                    child: Image.asset("images/pedra.png", height: 100),
+                  ),
+                  GestureDetector(
+                    onTap: () => runGame("papel"),
+                    child: Image.asset("images/papel.png", height: 100),
+                  ),
+                  GestureDetector(
+                    onTap: () => runGame("tesoura"),
+                    child: Image.asset("images/tesoura.png", height: 100),
+                  ),
                 ],
               ),
             ],
